@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Board
   attr_accessor :board_state, :rows, :cols
   def initialize(rows, cols)
@@ -5,7 +7,6 @@ class Board
     @rows = rows
     @cols = cols
   end
-
 
   def draw
     print '| '
@@ -16,8 +17,14 @@ class Board
       cols.times do |y|
         print @board_state[x][y], ' '
       end
-      print "|\n"  # => 
+      print "|\n" # =>
     end
   end
-end
+  def insert(col, sym)
 
+  end
+
+  def legal_move?(col)
+  end
+
+end

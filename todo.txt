@@ -1,0 +1,9 @@
+move more things board class
+make Board#each
+
+check for diagonal wins
+
+benchmark the different ways of checking for wins
+compare transposing/splitting/joining vs raw
+array fiddling
+

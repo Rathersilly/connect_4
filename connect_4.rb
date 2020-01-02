@@ -1,21 +1,14 @@
 # frozen_string_literal: true
 
-# draw board
-# first player moves by selecting column
-# second player moves
-# check for winner
-
-# should probably have a board class with each
-
 require 'colorize'
 require './player.rb'
 require './board.rb'
 BOARD_ROWS = 6
 BOARD_COLS = 7
-P1_TOKEN = "X"
-P2_TOKEN = "O"
-# INITIAL_BOARD = Array.new(BOARD_ROWS, '-') { Array.new(BOARD_COLS, '-') }
+P1_TOKEN = 'X'
+P2_TOKEN = 'O'
 
+# INITIAL_BOARD = Array.new(BOARD_ROWS, '-') { Array.new(BOARD_COLS, '-') }
 
 class Game
   # @@games_played = 0
@@ -39,13 +32,12 @@ class Game
     @players[:p2].token = P2_TOKEN
   end
 
-
   def game_loop
     moves = 0
     current_player = nil
     loop do
       puts "moves: #{moves}"
-      current_player = moves.even? ?  :p1 : :p2
+      current_player = moves.even? ? :p1 : :p2
 
       p current_player
       take_turn(current_player)
@@ -53,7 +45,7 @@ class Game
 
       moves += 1
 
-      break if moves > 10
+      break if moves > 20
       break if game_over?
     end
 
@@ -115,8 +107,7 @@ class Game
       end
     end
 
-    return false
-
+    false
   end
 end
 Game.new
