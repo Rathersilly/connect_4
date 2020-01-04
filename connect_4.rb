@@ -7,15 +7,20 @@ BOARD_ROWS = 6
 BOARD_COLS = 7
 P1_TOKEN = 'X'
 P2_TOKEN = 'O'
-
-# INITIAL_BOARD = Array.new(BOARD_ROWS, '-') { Array.new(BOARD_COLS, '-') }
+TITLE = '
+_________                                     __       _____  
+\_   ___ \  ____   ____   ____   ____   _____/  |_    /  |  | 
+/    \  \/ /  _ \ /    \ /    \_/ __ \_/ ___\   __\  /   |  |_
+\     \___(  <_> )   |  \   |  \  ___/\  \___|  |   /    ^   /
+ \______  /\____/|___|  /___|  /\___  >\___  >__|   \____   | 
+        \/            \/     \/     \/     \/            |__| '
 
 class Game
   # @@games_played = 0
 
   def initialize
     @board = Board.new(BOARD_ROWS, BOARD_COLS)
-    puts 'Time for Connect 4'
+    puts TITLE
     @players = { p1: Player.new(''), p2: Player.new('') }
     player_setup
     @board.draw
@@ -23,13 +28,25 @@ class Game
   end
 
   def player_setup
-    p @players
     puts "What is player 1's name: "
     @players[:p1].name = gets.chomp
+    if @players[:p1].name == ''
+      print "\e[F"
+      puts 'Alice'
+      @players[:p1].name = 'Alice' 
+    end
     @players[:p1].token = P1_TOKEN
     puts "What is player 2's name: "
     @players[:p2].name = gets.chomp
+    if @players[:p2].name == ''
+      print "\e[F"
+      puts 'Bob'
+      @players[:p2].name = 'Bob' 
+    end
     @players[:p2].token = P2_TOKEN
+    #sleep 1
+    print "\e[4F\e[J"
+    print "\n\n       #{@players[:p1].name.upcase} vs #{@players[:p2].name.upcase}\n\n"  
   end
 
   def game_loop
@@ -39,9 +56,11 @@ class Game
       puts "moves: #{moves}"
       current_player = moves.even? ? :p1 : :p2
 
-      p current_player
       take_turn(current_player)
       break if @board.game_over?
+
+      print "\e[12F"
+      print "\e[J"
       @board.draw
 
       moves += 1
@@ -49,8 +68,10 @@ class Game
       break if moves > 20
     end
 
-      @board.draw
-    print current_player, " wins!\n"
+    print "\e[13F"
+    print "\e[J"
+    @board.draw
+    print "\n          ", @players[current_player].name, " wins!\n"
   end
 
   def take_turn(player_sym)
@@ -58,16 +79,18 @@ class Game
     move = gets.chomp
     puts 'Please Press Column #'
     puts "move = #{move}"
-    # search through that col from the bottom and put the players token in the first free row
-    # if there is no free row, retake turn
-#    moveflag = false
+    ok_move = false
     case move
+    when /^q/
+      exit
     when /^e/
       filename = move[2..-1]
       @board.export(filename)
+      ok_move = true
     when /^i/
       filename = move[2..-1]
       @board.import(filename)
+      ok_move = true
     when 'h'
       @board.test_horiz
     when 'v'
@@ -79,40 +102,12 @@ class Game
     when /\d/
       ok_move = @board.insert(move.to_i, @players[player_sym].token)
     end
-    
-    take_turn(player_sym) if ok_move == false
-  end
 
-  def game_over?
-    # check horizontal
-#    BOARD_ROWS.times do |x|
-#      new_row = @board.board_state[x].join
-#      next unless @board.board_state[x].join =~ /(XXXX)/ || @board.board_state[x].join =~ /(OOOO)/
-#
-#      new_row.sub!(Regexp.last_match(1), 'GGGG')
-#      puts new_row
-#      puts 'HORIZ WIN'
-#      @board.board_state[x] = new_row.split('')
-#      p @board.board_state[x]
-#      @board.draw
-#
-#      return true
-#    end
-    
-
-    # vertical adds board  0
-    BOARD_COLS.times do |y|
-      vertstring = ''
-      BOARD_ROWS.times do |x|
-        vertstring += @board.board_state[x][y]
-        if vertstring =~ /(XXXX)/ || vertstring =~ /(OOOO)/
-          puts 'VERTICAL WIN!'
-          return true
-        end
-      end
+    if ok_move == false
+      print "\e[5F\e[J"
+      puts 'Invalid move.'
+      take_turn(player_sym)
     end
-
-    false
   end
 end
 Game.new
