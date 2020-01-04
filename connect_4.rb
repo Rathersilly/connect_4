@@ -41,59 +41,64 @@ class Game
 
       p current_player
       take_turn(current_player)
+      break if @board.game_over?
       @board.draw
 
       moves += 1
 
       break if moves > 20
-      break if game_over?
     end
 
+      @board.draw
     print current_player, " wins!\n"
   end
 
-  def take_turn(player)
-    print @players[player].name, "'s turn.  Press Column #\n"
-
-    move = gets.chomp.to_i
-    #  break if (1..BOARD_COLS).include?(move)
+  def take_turn(player_sym)
+    print @players[player_sym].name, "'s turn.  Press Column #\n"
+    move = gets.chomp
     puts 'Please Press Column #'
-
     puts "move = #{move}"
     # search through that col from the bottom and put the players token in the first free row
     # if there is no free row, retake turn
-    moveflag = false
-    BOARD_ROWS.times do |x|
-      @board.draw
-      pos = @board.board_state[BOARD_ROWS - x - 1][move - 1]
-      puts pos
-      next unless pos == '-'
-
-      @board.board_state[BOARD_ROWS - x - 1][move - 1] = @players[player].token
-      moveflag = true
-      break
+#    moveflag = false
+    case move
+    when /^e/
+      filename = move[2..-1]
+      @board.export(filename)
+    when /^i/
+      filename = move[2..-1]
+      @board.import(filename)
+    when 'h'
+      @board.test_horiz
+    when 'v'
+      @board.test_vert
+    when 'du'
+      @board.test_diag_up
+    when 'dd'
+      @board.test_diag_down
+    when /\d/
+      ok_move = @board.insert(move.to_i, @players[player_sym].token)
     end
-    if moveflag == false
-      puts 'invalid move'
-      take_turn(player)
-    end
+    
+    take_turn(player_sym) if ok_move == false
   end
 
   def game_over?
     # check horizontal
-    BOARD_ROWS.times do |x|
-      new_row = @board.board_state[x].join
-      next unless @board.board_state[x].join =~ /(XXXX)/ || @board.board_state[x].join =~ /(OOOO)/
-
-      new_row.sub!(Regexp.last_match(1), 'GGGG')
-      puts new_row
-      puts 'HORIZ WIN'
-      @board.board_state[x] = new_row.split('')
-      p @board.board_state[x]
-      @board.draw
-
-      return true
-    end
+#    BOARD_ROWS.times do |x|
+#      new_row = @board.board_state[x].join
+#      next unless @board.board_state[x].join =~ /(XXXX)/ || @board.board_state[x].join =~ /(OOOO)/
+#
+#      new_row.sub!(Regexp.last_match(1), 'GGGG')
+#      puts new_row
+#      puts 'HORIZ WIN'
+#      @board.board_state[x] = new_row.split('')
+#      p @board.board_state[x]
+#      @board.draw
+#
+#      return true
+#    end
+    
 
     # vertical adds board  0
     BOARD_COLS.times do |y|

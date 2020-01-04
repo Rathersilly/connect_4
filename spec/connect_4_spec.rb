@@ -10,8 +10,8 @@ require './connect_4.rb'
 # there are not more of player 2s pieces thatn p1
 # there arent 2 more of p1s pieces than p2s
 
-describe Game do
-  Describe draw_board do
-    it "has appropriate amounts of each players pieces" do
-      game = Game.new
-      @board
+#describe Game do
+#  Describe draw_board do
+#    it "has appropriate amounts of each players pieces" do
+#      game = Game.new
+#      @board
