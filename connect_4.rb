@@ -71,7 +71,7 @@ class Game
     print "\e[13F"
     print "\e[J"
     @board.draw
-    print "\n          ", @players[current_player].name, " wins!\n"
+    print "\n          ", @players[current_player].name, " wins!\n\n"
   end
 
   def take_turn(player_sym)
@@ -110,4 +110,4 @@ class Game
     end
   end
 end
-Game.new
+#Game.new
